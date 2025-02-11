@@ -1,7 +1,6 @@
 import Head from "next/head";
 
 export default function AboutUsPage() {
-
   return (
     <>
       {/* Metadata */}
@@ -13,9 +12,23 @@ export default function AboutUsPage() {
         <meta property="og:description" content="About Palace Pizza Bartow." />
         <meta property="og:url" content="https://palacepizzabartow.com/about-us" />
       </Head>
-      
-      <div className="p-6 max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 border-b pb-2 mb-6 text-center">About Us</h1>
+
+      <div className="p-6 max-w-5xl mx-auto min-h-screen">
+        <h1 className="text-4xl font-bold text-gray-900 border-b pb-2 mb-6 text-center">
+          About Us
+        </h1>
+
+        {/* Video Section */}
+        <div className="flex justify-center mt-10">
+          <div className="w-full max-w-md rounded-lg overflow-hidden shadow-lg bg-black">
+            <video
+              src="/palace-pizza-bartow-video.mp4"
+              controls
+              playsInline
+              className="w-full h-auto max-h-[80vh] object-cover rounded-lg"
+            />
+          </div>
+        </div>
 
         <p className="text-lg text-gray-700 mt-6">
           We create each dish with pride, from our fresh side salads to our mouthwatering entrees, and we use only the freshest ingredients available to create that authentic Italian flavor.
@@ -39,4 +52,4 @@ export default function AboutUsPage() {
       </div>
     </>
   );
-}
+} 

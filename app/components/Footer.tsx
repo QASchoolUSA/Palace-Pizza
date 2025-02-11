@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Facebook, Instagram } from "lucide-react";
 import Image from "next/image";
 
@@ -48,8 +47,8 @@ export default function Footer() {
         </p>
         <p>
           <span>Email: </span>
-          <a className="underline" href="mailto:contact@test.palacepizzabartow.com">
-            contact@test.palacepizzabartow.com
+          <a className="underline" href="mailto:palacepizzabartow@gmail.com">
+            palacepizzabartow@gmail.com
           </a>
         </p>
       </div>
@@ -57,19 +56,9 @@ export default function Footer() {
       {/* Opening Hours Section */}
       <div className="flex flex-col items-center space-y-3">
         <h3 className="text-lg font-bold">Opening Hours</h3>
-        <p>Monday - Friday: 11:00 AM - 9:00 PM</p>
+        <p>Monday - Saturday: 11:00 AM - 9:00 PM</p>
         <p>Sunday: Closed</p>
       </div>
-
-      {/* Menu & Order Buttons (Full Width for Mobile, Inline for Desktop) */}
-      {/* <div className="md:col-span-3 flex justify-center space-x-4 pt-4">
-        <Button asChild>
-          <Link href="/menu">Menu</Link>
-        </Button>
-        <Button asChild>
-          <Link href="https://orders.cake.net/09000339">Order Online</Link>
-        </Button>
-      </div> */}
     </footer>
   );
 }

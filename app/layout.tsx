@@ -4,6 +4,8 @@ import Footer from "./components/Footer";
 
 import 'typeface-lato';
 import 'typeface-montserrat';
+import { AudioProvider } from "@/contexts/AudioContext";
+import AudioControlButton from "./components/AudioControlButton";
 
 export const metadata = {
   icons: {
@@ -20,9 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <AudioProvider>
         <Header />
         {children}
+        <AudioControlButton />
         <Footer />
+        </AudioProvider>
       </body>
     </html>
   );
