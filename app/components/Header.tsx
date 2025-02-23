@@ -1,128 +1,105 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu } from "lucide-react";
-import clsx from "clsx";
-import OrderOnlineButton from "./OrderOnlineButton";
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
     }
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isMobileMenuOpen]);
 
   return (
-    <header className="bg-black text-white px-6 py-4 shadow-md relative z-50">
-      {/* Desktop Header */}
-      <div className="hidden md:grid grid-cols-3 items-center">
-        {/* Left - Navigation Links */}
-        <nav className="flex space-x-6">
-          <Link href="/menu" className="text-lg font-bold hover:text-gray-400">
-            Menu
-          </Link>
-          <Link href="/catering" className="text-lg font-bold hover:text-gray-400">
-            Catering
-          </Link>
-          <Link href="/about-us" className="text-lg font-bold hover:text-gray-400">
-            About
-          </Link>
-          <Link href="/contact-us" className="text-lg font-bold hover:text-gray-400">
-            Contact
-          </Link>
+    <header className="relative w-full bg-newblack text-white px-6 shadow-md z-50">
+      <div className="flex items-center justify-between h-36 md:h-32">
+        {/* Mobile Menu Button */}
+        <button
+          onClick={toggleMobileMenu}
+          className="md:hidden text-white focus:outline-none p-3"
+        >
+          <Menu size={32} />
+        </button>
+
+        {/* Desktop Links */}
+        <nav className="hidden md:flex space-x-6 flex-1">
+          <Link href="/menu" className="text-white">Menu</Link>
+          <Link href="/catering" className="text-white">Catering</Link>
+          <Link href="/about-us" className="text-white">About Us</Link>
+          <Link href="/contact-us" className="text-white">Contact Us</Link>
         </nav>
 
         {/* Center - Logo */}
-        <div className="flex justify-center">
+        <div className="absolute left-1/2 transform -translate-x-1/2">
           <Link href="/">
-            <img src="/logo-palace-pizza.png" alt="Logo" className="h-14" />
-          </Link>
-        </div>
-        <OrderOnlineButton />
-      </div>
-
-      {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between">
-        {/* Mobile Menu Button */}
-        <div>
-          <button
-            ref={buttonRef}
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="text-gray-300"
-          >
-            <Menu size={24} />
-          </button>
-        </div>
-
-        {/* Center - Logo */}
-        <div className="flex-1 flex justify-center">
-          <Link href="/">
-            <img src="/logo-palace-pizza.png" alt="Logo" className="h-14" />
+            <img
+              src="/With Tomato-Gold.png"
+              alt="Logo"
+              className="h-24 md:h-28"
+            />
           </Link>
         </div>
 
-        {/* Placeholder to balance the layout */}
-        <div className="w-6" />
+        {/* Order Online Button */}
+        <div className="hidden md:flex flex-1 justify-end">
+          <Link href="https://orders.cake.net/09000339">
+            <button className="bg-black text-white px-4 py-2 rounded">
+              Order Online
+            </button>
+          </Link>
+        </div>
       </div>
 
-      {/* Mobile Menu - Animated Dropdown */}
+      {/* Mobile Dropdown Menu */}
       <div
         ref={menuRef}
-        className={clsx(
-          "absolute top-20 left-0 w-full bg-white shadow-md md:hidden flex flex-col items-center space-y-4 text-black z-50 overflow-hidden transition-all duration-500",
-          isOpen ? "max-h-[400px] py-4 opacity-100" : "max-h-0 opacity-0"
-        )}
+        className={`absolute left-0 w-full bg-newgray text-black shadow-lg z-40 transition-all duration-300 ease-in-out overflow-hidden ${
+          isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+        }`}
+        style={{ top: '100%' }}
       >
-        <Link
-          href="/menu"
-          className="text-lg font-medium hover:text-gray-600"
-          onClick={() => setIsOpen(false)}
-        >
-          Menu
-        </Link>
-        <Link
-          href="/catering"
-          className="text-lg font-medium hover:text-gray-600"
-          onClick={() => setIsOpen(false)}
-        >
-          Catering
-        </Link>
-        <Link
-          href="/about-us"
-          className="text-lg font-medium hover:text-gray-600"
-          onClick={() => setIsOpen(false)}
-        >
-          About
-        </Link>
-        <Link
-          href="/contact-us"
-          className="text-lg font-medium hover:text-gray-600"
-          onClick={() => setIsOpen(false)}
-        >
-          Contact
-        </Link>
-        <OrderOnlineButton options={{ onClick: () => setIsOpen(false) }} />      </div>
+        <ul className="flex flex-col items-center py-4">
+          <li className="py-2">
+            <Link href="/menu" className="text-black" onClick={() => setIsMobileMenuOpen(false)}>Menu</Link>
+          </li>
+          <li className="py-2">
+            <Link href="/catering" className="text-black" onClick={() => setIsMobileMenuOpen(false)}>Catering</Link>
+          </li>
+          <li className="py-2">
+            <Link href="/about-us" className="text-black" onClick={() => setIsMobileMenuOpen(false)}>About Us</Link>
+          </li>
+          <li className="py-2">
+            <Link href="/contact-us" className="text-black" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link>
+          </li>
+          <li className="py-2">
+            <Link href="https://orders.cake.net/09000339">
+              <button className="bg-black text-white px-4 py-2 rounded" onClick={() => setIsMobileMenuOpen(false)}>
+                Order Online
+              </button>
+            </Link>
+          </li>
+        </ul>
+      </div>
     </header>
   );
 }

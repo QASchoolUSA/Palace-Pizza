@@ -37,7 +37,7 @@ export default function ContactUsPage() {
     setStatus({ type: "loading", message: "Sending your message..." });
 
     try {
-      const response = await fetch("https://formsubmit.co/7d8b9925172dbfd42e2e71e2fd4e0023", {
+      const response = await fetch("https://formsubmit.co/palacepizzabartow@gmail.com", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -60,7 +60,7 @@ export default function ContactUsPage() {
         <meta name="description" content="Get in touch with us at Palace Pizza Bartow." />
       </Head>
 
-      <div className="p-6 max-w-5xl mx-auto min-h-screen">
+      <div className="p-6 max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-center my-6 text-black border-b pb-2">
           Contact Us
         </h1>
