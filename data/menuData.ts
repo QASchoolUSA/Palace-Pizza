@@ -963,7 +963,6 @@ export const menuCategories = [
       mealType: "both",
     },
   
-    // Classic Pasta
     {
       name: "Spaghetti Lunch",
       category: "classic pasta",
@@ -1046,36 +1045,8 @@ export const menuCategories = [
       price: "$10.50",
       mealType: "lunch",
     },
-    {
-      name: "Penne Palace Lunch",
-      category: "specialty pasta",
-      description: "Penne pasta sauteed in vodka cream sauce with chicken and mushrooms.",
-      price: "$10.50",
-      mealType: "lunch",
-    },
-    {
-      name: "Penne Alfredo Lunch",
-      category: "specialty pasta",
-      description: "Penne pasta sauteed in white cream sauce with chicken and broccoli.",
-      price: "$10.50",
-      mealType: "lunch",
-    },
   
-    // Specialty Pasta
-    {
-      name: "Spaghetti Allo Scoglio",
-      category: "specialty pasta",
-      description: "A classic italian pasta with clams, mussels, and shrimp (Red sauce, White sauce or Aurora sauce)",
-      price: "$21.95",
-      mealType: "dinner",
-    },
-    {
-      name: "Lobster Ravioli",
-      category: "specialty pasta",
-      description: "Sauteed with Shrimp in out lobster sauce",
-      price: "$21.95",
-      mealType: "dinner",
-    },
+    // ---------- Classic Pasta (Dinner Items) ----------
     {
       name: "Spaghetti Dinner",
       category: "classic pasta",
@@ -1092,7 +1063,7 @@ export const menuCategories = [
     },
     {
       name: "Spaghetti Dinner",
-      category: "classsic pasta",
+      category: "classic pasta",
       description: "With your choice of meatballs, sausage or meat sauce.",
       price: "$12.95",
       mealType: "dinner",
@@ -1153,6 +1124,8 @@ export const menuCategories = [
       price: "$13.95",
       mealType: "dinner",
     },
+  
+    // ---------- Specialty Pasta (Lunch Items) ----------
     {
       name: "Penne Palace Lunch",
       category: "specialty pasta",
@@ -1181,74 +1154,90 @@ export const menuCategories = [
       price: "$10.50",
       mealType: "lunch",
     },
+  
+    // ---------- Specialty Pasta (Dinner Items) ----------
     {
-      category: "specialty pasta",
       name: "Penne Palace Dinner",
-      price: "$12.95",
+      category: "specialty pasta",
       description: "Penne sautéed in a vodka cream sauce with chicken and mushrooms.",
+      price: "$12.95",
       mealType: "dinner",
     },
     {
-      category: "specialty pasta",
       name: "Penne Alfredo Dinner",
-      price: "$12.95",
+      category: "specialty pasta",
       description: "Penne pasta sauteed in white cream sauce with chicken and broccoli.",
-      mealType: "dinner",
-    },
-    {
-      category: "specialty pasta",
-      name: "Tortellini Sorrento Dinner",
       price: "$12.95",
+      mealType: "dinner",
+    },
+    {
+      name: "Tortellini Sorrento Dinner",
+      category: "specialty pasta",
       description: "With tomato sauce topped with melted mozzarella cheese.",
+      price: "$12.95",
       mealType: "dinner",
     },
     {
-      category: "specialty pasta",
       name: "Chicken Saltimbocca Dinner",
-      price: "$15.50",
+      category: "specialty pasta",
       description: "Chicken sauteed with prosciutto(ham) spinach and topped with provolone cheese in a white wine sauce over spaghetti.",
+      price: "$15.50",
       mealType: "dinner",
     },
     {
-      category: "specialty pasta",
       name: "Chicken Marsala Dinner",
-      price: "$15.50",
+      category: "specialty pasta",
       description: "Chicken and mushrooms sauteed in a marsala wine sauce over spaghetti.",
+      price: "$15.50",
       mealType: "dinner",
     },
     {
-      category: "specialty pasta",
       name: "Chicken Francese Dinner",
-      price: "$15.50",
+      category: "specialty pasta",
       description: "Egg battered and sauteed in a lemon, white wine sauce over spaghetti.",
+      price: "$15.50",
       mealType: "dinner",
     },
     {
-      category: "specialty pasta",
       name: "Chicken Palace Dinner",
-      price: "$15.50",
+      category: "specialty pasta",
       description: "Sauteed chicken in a pink vodka sauce topped with prosciutto(ham), fresh mozzarella cheese and sliced tomatoes over spaghetti pasta.",
-      mealType: "dinner",
-    },
-    {
-      category: "specialty pasta",
-      name: "Spaghetti with Baby Clams Dinner",
       price: "$15.50",
+      mealType: "dinner",
+    },
+    {
+      name: "Spaghetti with Baby Clams Dinner",
+      category: "specialty pasta",
       description: "Baby Clams sauteed with garlic in a white wine sauce or fresh tomato sauce.",
+      price: "$15.50",
       mealType: "dinner",
     },
     {
-      category: "specialty pasta",
       name: "Veal Parmigiana Dinner",
-      price: "$17.50",
+      category: "specialty pasta",
       description: "Breaded, pan-fried and topped with fresh mozzarella and tomato sauce over spaghetti.",
+      price: "$17.50",
       mealType: "dinner",
     },
     {
-      category: "specialty pasta",
       name: "Shrimps Alfredo Dinner",
-      price: "$16.50",
+      category: "specialty pasta",
       description: "Sauteed Shrimp with Alfredo sauce over penne pasta.",
+      price: "$16.50",
+      mealType: "dinner",
+    },
+    {
+      name: "Spaghetti Allo Scoglio",
+      category: "specialty pasta",
+      description: "A classic Italian pasta with clams mussels and shrimp (Red sauce, White sauce, or Aurora sauce)",
+      price: "$21.95",
+      mealType: "dinner",
+    },
+    {
+      name: "Lobster Ravioli",
+      category: "specialty pasta",
+      description: "Sauteed with Shrimp in our lobster sauce.",
+      price: "$21.95",
       mealType: "dinner",
     },
   
@@ -1420,6 +1409,13 @@ export const menuCategories = [
     },
     {
       name: "Raspberry Cake",
+      category: "desserts",
+      description: "",
+      price: "$5.00",
+      mealType: "both",
+    },
+    {
+      name: "Toasted Almond Cream Cake",
       category: "desserts",
       description: "",
       price: "$5.00",
