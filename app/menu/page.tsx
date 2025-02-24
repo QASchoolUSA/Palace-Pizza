@@ -347,7 +347,7 @@ export default function MenuPage() {
         )}
 
         {/* Pizza Toppings Section */}
-        {activePizzaType === "classic" || activePizzaType === "coupons" && (
+        {activePizzaType && ["classic", "coupons"].includes(activePizzaType) && (
           <div className="mt-8">
             <h3 className="text-center text-xl font-bold">Available Toppings</h3>
             <p className="text-center text-sm text-gray-500 mb-4">
