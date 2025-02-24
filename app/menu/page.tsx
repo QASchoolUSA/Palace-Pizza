@@ -66,8 +66,8 @@ export default function MenuPage() {
       item.category.toLowerCase() === "classic pasta"
         ? true
         : (["all", "gluten free", "specialty pasta"].includes(activeFilter)
-            ? (item.mealType === activeMealType || item.mealType === "both")
-            : true);
+          ? (item.mealType === activeMealType || item.mealType === "both")
+          : true);
     const pizzaTypeMatch = !activePizzaType || item.pizzaType === activePizzaType;
     return categoryMatch && mealTypeMatch && pizzaTypeMatch;
   });
@@ -241,9 +241,11 @@ export default function MenuPage() {
                     {/* Empty left half to align with meal names */}
                     <div className="w-1/2"></div>
                     {/* Right half with labels matching the price container */}
-                    <div className="flex w-1/2 justify-end font-bold">
-                      <div className="w-1/2 text-right">Lunch</div>
-                      <div className="w-1/2 text-right">Dinner</div>
+                    <div className="flex justify-end">
+                      <div className="flex-shrink-0 w-32 flex justify-between font-bold space-x-2">
+                        <div className="min-w-[50px] text-right -ml-1">Lunch</div>
+                        <div className="min-w-[50px] text-right">Dinner</div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -340,7 +342,199 @@ export default function MenuPage() {
           </div>
         )}
 
-        {/* Other sections remain unchanged ... */}
+        {/* Pizza Toppings Section */}
+        {activePizzaType === "classic" && (
+          <div className="mt-8">
+            <h3 className="text-center text-xl font-bold">Available Toppings</h3>
+            <p className="text-center text-sm text-gray-500 mb-4">
+              Toppings can be added to the whole pizza, or the left and right sides.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {pizzaToppings
+                .filter((topping) => topping.location === "whole")
+                .map((topping, index) => (
+                  <div
+                    key={index}
+                    className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                  >
+                    <span>{topping.name}</span>
+                    <span className="font-bold">{topping.price}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {["calzones", "flat bread", "strombolis"].includes(activeFilter) && (
+          <div className="mt-8">
+            <h3 className="text-center text-xl font-bold mb-4">Available Toppings</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {pizzaToppings
+                .filter((topping) => topping.location === "whole")
+                .map((topping, index) => (
+                  <div
+                    key={index}
+                    className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                  >
+                    <span>{topping.name}</span>
+                    <span className="font-bold">{topping.price}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {["classic pasta", "specialty pasta"].includes(activeFilter) && (
+          <div className="mt-8">
+            <h3 className="text-center text-xl font-bold">
+              Available Bread Choices
+            </h3>
+            <p className="text-center text-sm text-gray-500 mb-4">
+              You can order bread or have no bread option.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
+              {breadChoices.map((addition, index) => (
+                <div
+                  key={index}
+                  className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                >
+                  <span>{addition.name}</span>
+                </div>
+              ))}
+            </div>
+            <h3 className="text-center text-xl font-bold mt-4 mb-2">
+              Available Pasta Additions
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {pastaAdditions.map((addition, index) => (
+                <div
+                  key={index}
+                  className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                >
+                  <span>{addition.name}</span>
+                  {addition.price && (
+                    <span className="font-bold">{addition.price}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {["cold sub", "hot hoagie", "wraps"].includes(activeFilter) && (
+          <div className="mt-8">
+            <h3 className="text-center text-xl font-bold mb-4">
+              Available Additions
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {sandwichAdditions.map((addition, index) => (
+                <div
+                  key={index}
+                  className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                >
+                  <span>{addition.name}</span>
+                  {addition.price && (
+                    <span className="font-bold">{addition.price}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeFilter === "gluten free" && (
+          <div className="mt-8">
+            {/* Show Available Pasta Additions if Pasta is selected */}
+            {selectedGlutenFreeCategory === "pasta" && (
+              <>
+                <h3 className="text-center text-xl font-bold mb-4">
+                  Available Pasta Additions
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {pastaAdditions.map((addition, index) => (
+                    <div
+                      key={index}
+                      className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                    >
+                      <span>{addition.name}</span>
+                      {addition.price && (
+                        <span className="font-bold">{addition.price}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Show Available Gourmet Options & Available Pizza Additions if Pizza is selected */}
+            {selectedGlutenFreeCategory === "pizza" && (
+              <>
+                <h3 className="text-center text-xl font-bold mb-4">
+                  Available Gourmet Options
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+                  {gourmetPizzaOptions.map((addition, index) => (
+                    <div
+                      key={index}
+                      className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                    >
+                      <span>{addition.name}</span>
+                      {addition.price && (
+                        <span className="font-bold">{addition.price}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <h3 className="text-center text-xl font-bold mb-4">
+                  Available Pizza Additions
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {pizzaToppings.map((addition, index) => (
+                    <div
+                      key={index}
+                      className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                    >
+                      <span>{addition.name}</span>
+                      {addition.price && (
+                        <span className="font-bold">{addition.price}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {activeFilter === "salad" && (
+          <div className="mt-8">
+            <h3 className="text-center text-xl font-bold mb-4">Available Dressings</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {saladDressings.map((addition, index) => (
+                <div
+                  key={index}
+                  className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                >
+                  <span>{addition.name}</span>
+                  {addition.price && <span className="font-bold">{addition.price}</span>}
+                </div>
+              ))}
+            </div>
+            <h3 className="text-center text-xl font-bold mb-4 mt-4">Available Additions</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {saladAdditions.map((addition, index) => (
+                <div
+                  key={index}
+                  className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                >
+                  <span>{addition.name}</span>
+                  {addition.price && <span className="font-bold">{addition.price}</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
