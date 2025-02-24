@@ -12,7 +12,7 @@ import { breadChoices } from "@/data/breadChoises";
 import { pastaAdditions } from "@/data/pastaAdditions";
 import { gourmetPizzaOptions } from "@/data/gourmetPizzaOptions";
 
-// Define a type for menu items
+// Define a type for menu items (updated for salads)
 type MenuItem = {
   category: string;
   mealCategory?: string;
@@ -21,6 +21,8 @@ type MenuItem = {
   name: string;
   description?: string;
   price?: string;
+  halfPrice?: string;
+  fullPrice?: string;
 };
 
 export default function MenuPage() {
@@ -54,33 +56,56 @@ export default function MenuPage() {
     isDragging = false;
   };
 
-  // Filter menu items based on the selected category, meal type, and pizza type
+  // Filter menu items.
+  // For filters "all", "gluten free", "classic pasta", and "specialty pasta" we apply meal type filtering.
   const filteredMenu = menuItems.filter((item) => {
     const categoryMatch = activeFilter === "all" || item.category === activeFilter;
-    const mealTypeMatch = item.mealType === activeMealType || item.mealType === "both";
+    const mealTypeMatch =
+      ["all", "gluten free", "classic pasta", "specialty pasta"].includes(activeFilter)
+        ? (item.mealType === activeMealType || item.mealType === "both")
+        : true;
     const pizzaTypeMatch = !activePizzaType || item.pizzaType === activePizzaType;
     return categoryMatch && mealTypeMatch && pizzaTypeMatch;
   });
 
-  // Group menu items by category or pizzaType
-  const groupMenuItems = (items: MenuItem[]) => {
-    if (activeFilter === "pizza") {
-      return items.reduce((acc: Record<string, MenuItem[]>, item) => {
+  // Group menu items:
+  // • When activeFilter is "all": group all items by category (so pizza items are under "pizza").
+  // • When activeFilter is "pizza": group by pizzaType.
+  // • Otherwise: group by category.
+  const groupedMenu = (() => {
+    if (activeFilter === "all") {
+      return filteredMenu.reduce((acc: Record<string, MenuItem[]>, item) => {
+        const key = item.category; // Group by category for "all"
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(item);
+        return acc;
+      }, {} as Record<string, MenuItem[]>);
+    } else if (activeFilter === "pizza") {
+      return filteredMenu.reduce((acc: Record<string, MenuItem[]>, item) => {
         const key = item.pizzaType || "Other";
         if (!acc[key]) acc[key] = [];
         acc[key].push(item);
         return acc;
-      }, {});
+      }, {} as Record<string, MenuItem[]>);
+    } else {
+      return filteredMenu.reduce((acc: Record<string, MenuItem[]>, item) => {
+        const key = item.category;
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(item);
+        return acc;
+      }, {} as Record<string, MenuItem[]>);
     }
-    return items.reduce((acc: Record<string, MenuItem[]>, item) => {
-      const key = item.category;
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(item);
-      return acc;
-    }, {});
-  };
+  })();
 
-  const groupedMenu = groupMenuItems(filteredMenu);
+  // Build ordered groups.
+  // For activeFilter "all": follow the menuCategories order exactly.
+  // For activeFilter "pizza": use a fixed order for pizza types.
+  const orderedGroups =
+    activeFilter === "all"
+      ? menuCategories.filter((cat) => groupedMenu[cat])
+      : activeFilter === "pizza"
+      ? ["classic", "red gourmet", "white gourmet"].filter((key) => groupedMenu[key])
+      : menuCategories.filter((cat) => groupedMenu[cat]);
 
   return (
     <>
@@ -93,23 +118,6 @@ export default function MenuPage() {
         <h1 className="text-4xl font-bold text-center my-6 text-black border-b pb-2">
           Menu
         </h1>
-
-        {/* Meal Type Filter Bar */}
-        <div className="flex justify-center mb-4 space-x-4">
-          {["lunch", "dinner"].map((mealType) => (
-            <button
-              key={mealType}
-              onClick={() => setActiveMealType(mealType)}
-              className={`px-4 py-2 rounded transition-all shadow-md font-bold
-                ${activeMealType === mealType
-                  ? "bg-gold text-black shadow-lg scale-105"
-                  : "bg-newblack text-white hover:bg-slate-950 hover:shadow-lg"
-                }`}
-            >
-              {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
-            </button>
-          ))}
-        </div>
 
         {/* Scrollable Filter Bar */}
         <div className="relative mb-2">
@@ -129,13 +137,12 @@ export default function MenuPage() {
                   onClick={() => {
                     setActiveFilter(category);
                     setActivePizzaType(null); // Reset pizza type when changing category
-                    console.log(activeFilter);
                   }}
-                  className={`whitespace-nowrap px-4 py-2 rounded transition-all shadow-md shadow-gray-400 font-bold
-                  ${activeFilter === category
+                  className={`whitespace-nowrap px-4 py-2 rounded transition-all shadow-md shadow-gray-400 font-bold ${
+                    activeFilter === category
                       ? "bg-gold text-black shadow-lg shadow-gray-600 scale-105"
                       : "bg-newblack text-white hover:bg-slate-950 hover:shadow-lg hover:shadow-gray-500"
-                    }`}
+                  }`}
                 >
                   {category
                     .split(" ")
@@ -147,20 +154,42 @@ export default function MenuPage() {
           </div>
         </div>
 
-        {/* Additional Pizza Type Buttons */}
+        {/* Meal Type Toggle: Render when activeFilter is "all", "gluten free", "classic pasta", or "specialty pasta" */}
+        {["all", "gluten free", "classic pasta", "specialty pasta"].includes(activeFilter) && (
+          <div className="flex justify-center mb-4 space-x-4">
+            {["lunch", "dinner"].map((type) => (
+              <button
+                key={type}
+                onClick={() => setActiveMealType(type)}
+                className={`px-4 py-2 rounded transition-all shadow-md shadow-gray-400 font-bold ${
+                  activeMealType === type
+                    ? "bg-gold text-black shadow-lg shadow-gray-600 scale-105"
+                    : "bg-newblack text-white hover:bg-slate-950 hover:shadow-lg hover:shadow-gray-500"
+                }`}
+              >
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Additional Pizza Type Buttons: Render only when activeFilter is "pizza" */}
         {activeFilter === "pizza" && (
           <div className="flex justify-center space-x-4">
             {["classic", "red gourmet", "white gourmet"].map((type) => (
               <button
                 key={type}
                 onClick={() => setActivePizzaType(type)}
-                className={`px-4 py-2 rounded transition-all shadow-md shadow-gray-400 font-bold
-                  ${activePizzaType === type
+                className={`px-4 py-2 rounded transition-all shadow-md shadow-gray-400 font-bold ${
+                  activePizzaType === type
                     ? "bg-gold text-black shadow-lg shadow-gray-600 scale-105"
                     : "bg-newblack text-white hover:bg-slate-950 hover:shadow-lg hover:shadow-gray-500"
-                  }`}
+                }`}
               >
-                {type.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                {type
+                  .split(" ")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
               </button>
             ))}
           </div>
@@ -175,11 +204,11 @@ export default function MenuPage() {
                 <button
                   key={category}
                   onClick={() => setSelectedGlutenFreeCategory(category)}
-                  className={`px-6 py-2 rounded font-bold transition-all shadow-md shadow-gray-400
-            ${selectedGlutenFreeCategory === category
+                  className={`px-6 py-2 rounded font-bold transition-all shadow-md shadow-gray-400 ${
+                    selectedGlutenFreeCategory === category
                       ? "bg-gold text-black shadow-lg shadow-gray-600 scale-105"
                       : "bg-newblack text-white hover:bg-slate-950 hover:shadow-lg hover:shadow-gray-500"
-                    }`}
+                  }`}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
                 </button>
@@ -187,14 +216,14 @@ export default function MenuPage() {
             </div>
           )}
 
-          {Object.entries(groupedMenu).map(([group, items]) => {
-            // **Filter items based on selected gluten-free category**
+          {orderedGroups.map((group) => {
+            const items = groupedMenu[group];
+            // For gluten free filter, further filter items by mealCategory if needed.
             const filteredItems =
               activeFilter === "gluten free"
                 ? items.filter((item) => item.mealCategory === selectedGlutenFreeCategory)
                 : items;
 
-            // Skip rendering if no items match the filter
             if (filteredItems.length === 0) return null;
 
             return (
@@ -214,7 +243,6 @@ export default function MenuPage() {
                       🍕 A rich and savory pizza made with a signature red sauce, premium cheese, and gourmet toppings.
                     </p>
                   )}
-
                   {activePizzaType === "white gourmet" && (
                     <p className="text-center text-black p-4 rounded-lg shadow-md max-w-2xl mx-auto">
                       🍕 Topped with olive oil, fresh garlic, Parmigiano, and our special blend of mozzarella​ cheese.
@@ -222,7 +250,7 @@ export default function MenuPage() {
                   )}
                 </div>
 
-                {/* Filtered Menu Items */}
+                {/* Render each menu item */}
                 {filteredItems.map((item, index) => (
                   <div
                     key={index}
@@ -230,9 +258,18 @@ export default function MenuPage() {
                   >
                     <div>
                       <h3 className="text-xl font-bold">{item.name}</h3>
-                      {item.description && <p className="text-sm text-gray-500">{item.description}</p>}
+                      {item.description && (
+                        <p className="text-sm text-gray-500">{item.description}</p>
+                      )}
                     </div>
-                    <span className="font-bold">{item.price}</span>
+                    {item.category.toLowerCase() === "salad" && item.halfPrice && item.fullPrice ? (
+                      <div className="text-right">
+                        <div className="font-bold">Half: {item.halfPrice}</div>
+                        <div className="font-bold">Full: {item.fullPrice}</div>
+                      </div>
+                    ) : (
+                      <span className="font-bold">{item.price}</span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -250,7 +287,9 @@ export default function MenuPage() {
                   className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
                 >
                   <span>{modifier.name}</span>
-                  {modifier.price && <span className="font-bold">{modifier.price}</span>}
+                  {modifier.price && (
+                    <span className="font-bold">{modifier.price}</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -261,35 +300,52 @@ export default function MenuPage() {
         {activePizzaType === "classic" && (
           <div className="mt-8">
             <h3 className="text-center text-xl font-bold">Available Toppings</h3>
-            <p className="text-center text-sm text-gray-500 mb-4">Toppings can be added to the whole pizza, or the left and right sides.</p>
+            <p className="text-center text-sm text-gray-500 mb-4">
+              Toppings can be added to the whole pizza, or the left and right sides.
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {pizzaToppings.filter(topping => topping.location === "whole").map((topping, index) => (
-                <div key={index} className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center">
-                  <span>{topping.name}</span>
-                  <span className="font-bold">{topping.price}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        {['calzones', 'flat bread', 'strombolis'].includes(activeFilter) && (
-          <div className="mt-8">
-            <h3 className="text-center text-xl font-bold mb-4">Available Toppings</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {pizzaToppings.filter(topping => topping.location === "whole").map((topping, index) => (
-                <div key={index} className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center">
-                  <span>{topping.name}</span>
-                  <span className="font-bold">{topping.price}</span>
-                </div>
-              ))}
+              {pizzaToppings
+                .filter((topping) => topping.location === "whole")
+                .map((topping, index) => (
+                  <div
+                    key={index}
+                    className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                  >
+                    <span>{topping.name}</span>
+                    <span className="font-bold">{topping.price}</span>
+                  </div>
+                ))}
             </div>
           </div>
         )}
 
-        {['classic pasta', 'specialty pasta'].includes(activeFilter) && (
+        {["calzones", "flat bread", "strombolis"].includes(activeFilter) && (
           <div className="mt-8">
-            <h3 className="text-center text-xl font-bold">Available Bread Choices</h3>
-            <p className="text-center text-sm text-gray-500 mb-4">You can order bread or have no bread option.</p>
+            <h3 className="text-center text-xl font-bold mb-4">Available Toppings</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {pizzaToppings
+                .filter((topping) => topping.location === "whole")
+                .map((topping, index) => (
+                  <div
+                    key={index}
+                    className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
+                  >
+                    <span>{topping.name}</span>
+                    <span className="font-bold">{topping.price}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {["classic pasta", "specialty pasta"].includes(activeFilter) && (
+          <div className="mt-8">
+            <h3 className="text-center text-xl font-bold">
+              Available Bread Choices
+            </h3>
+            <p className="text-center text-sm text-gray-500 mb-4">
+              You can order bread or have no bread option.
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
               {breadChoices.map((addition, index) => (
                 <div
@@ -300,7 +356,9 @@ export default function MenuPage() {
                 </div>
               ))}
             </div>
-            <h3 className="text-center text-xl font-bold mt-4 mb-2">Available Pasta Additons</h3>
+            <h3 className="text-center text-xl font-bold mt-4 mb-2">
+              Available Pasta Additons
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {pastaAdditions.map((addition, index) => (
                 <div
@@ -308,17 +366,20 @@ export default function MenuPage() {
                   className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
                 >
                   <span>{addition.name}</span>
-                  {addition.price && <span className="font-bold">{addition.price}</span>}
+                  {addition.price && (
+                    <span className="font-bold">{addition.price}</span>
+                  )}
                 </div>
               ))}
             </div>
           </div>
-
         )}
 
-        {['cold sub', 'hot hoagie', 'wraps'].includes(activeFilter) && (
+        {["cold sub", "hot hoagie", "wraps"].includes(activeFilter) && (
           <div className="mt-8">
-            <h3 className="text-center text-xl font-bold mb-4">Available Additions</h3>
+            <h3 className="text-center text-xl font-bold mb-4">
+              Available Additions
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {sandwichAdditions.map((addition, index) => (
                 <div
@@ -326,7 +387,9 @@ export default function MenuPage() {
                   className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
                 >
                   <span>{addition.name}</span>
-                  {addition.price && <span className="font-bold">{addition.price}</span>}
+                  {addition.price && (
+                    <span className="font-bold">{addition.price}</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -338,7 +401,9 @@ export default function MenuPage() {
             {/* Show Available Pasta Additions if Pasta is selected */}
             {selectedGlutenFreeCategory === "pasta" && (
               <>
-                <h3 className="text-center text-xl font-bold mb-4">Available Pasta Additions</h3>
+                <h3 className="text-center text-xl font-bold mb-4">
+                  Available Pasta Additions
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {pastaAdditions.map((addition, index) => (
                     <div
@@ -346,7 +411,9 @@ export default function MenuPage() {
                       className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
                     >
                       <span>{addition.name}</span>
-                      {addition.price && <span className="font-bold">{addition.price}</span>}
+                      {addition.price && (
+                        <span className="font-bold">{addition.price}</span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -356,7 +423,9 @@ export default function MenuPage() {
             {/* Show Available Gourmet Options & Available Pizza Additions if Pizza is selected */}
             {selectedGlutenFreeCategory === "pizza" && (
               <>
-                <h3 className="text-center text-xl font-bold mb-4">Available Gourmet Options</h3>
+                <h3 className="text-center text-xl font-bold mb-4">
+                  Available Gourmet Options
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
                   {gourmetPizzaOptions.map((addition, index) => (
                     <div
@@ -364,12 +433,16 @@ export default function MenuPage() {
                       className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
                     >
                       <span>{addition.name}</span>
-                      {addition.price && <span className="font-bold">{addition.price}</span>}
+                      {addition.price && (
+                        <span className="font-bold">{addition.price}</span>
+                      )}
                     </div>
                   ))}
                 </div>
 
-                <h3 className="text-center text-xl font-bold mb-4">Available Pizza Additions</h3>
+                <h3 className="text-center text-xl font-bold mb-4">
+                  Available Pizza Additions
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {pizzaToppings.map((addition, index) => (
                     <div
@@ -377,7 +450,9 @@ export default function MenuPage() {
                       className="bg-newgray shadow-md p-4 rounded-lg flex justify-between items-center"
                     >
                       <span>{addition.name}</span>
-                      {addition.price && <span className="font-bold">{addition.price}</span>}
+                      {addition.price && (
+                        <span className="font-bold">{addition.price}</span>
+                      )}
                     </div>
                   ))}
                 </div>
