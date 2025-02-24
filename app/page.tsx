@@ -1,18 +1,20 @@
 import Image from "next/image";
-import Head from "next/head";
 import Map from "./components/Map";
+
+export const metadata = {
+  title: "Palace Pizza Bartow",
+  description: "The Secret Ingredient is Love.",
+  openGraph: {
+    title: "Palace Pizza Bartow",
+    description: "The Secret Ingredient is Love.",
+    url: "https://palacepizzabartow.com/",
+  },
+};
+
 
 export default function MainPage() {
   return (
     <>
-      <Head>
-        <title>Palace Pizza Bartow</title>
-        <meta name="description" content="The Secret Ingredient is Love." />
-        <meta name="keywords" content="Palace Pizza Bartow" />
-        <meta property="og:title" content="Palace Pizza Bartow" />
-        <meta property="og:description" content="The Secret Ingredient is Love." />
-        <meta property="og:url" content="https://palacepizzabartow.com/" />
-      </Head>
       <div>
 
         {/* Hero Section */}
