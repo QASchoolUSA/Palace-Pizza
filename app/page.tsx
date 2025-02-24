@@ -16,7 +16,6 @@ export default function MainPage() {
   return (
     <>
       <div>
-
         {/* Hero Section */}
         <div
           className="relative h-[350px] md:h-[500px] flex flex-col items-center justify-center text-white text-center bg-cover bg-center shadow-lg"
