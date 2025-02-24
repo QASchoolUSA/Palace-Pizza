@@ -1,5 +1,6 @@
 "use client";
 
+import Head from "next/head";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,16 +14,6 @@ interface FormData {
   phone: string;
   message: string;
 }
-
-export const metadata = {
-  title: "Contact Us - Palace Pizza Bartow",
-  description: "Get in touch with us at Palace Pizza Bartow.",
-  openGraph: {
-    title: "Contact Us - Palace Pizza Bartow",
-    description: "Get in touch with us at Palace Pizza Bartow.",
-    url: "https://palacepizzabartow.com/contact-us",
-  },
-};
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState<FormData>({
@@ -64,6 +55,10 @@ export default function ContactUsPage() {
 
   return (
     <>
+      <Head>
+        <title>About Us - Palace Pizza Bartow</title>
+        <meta name="description" content="Learn more about Palace Pizza Bartow and our delicious menu." />
+      </Head>
       <div className="p-6 max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-center my-6 text-black border-b pb-2">
           Contact Us
