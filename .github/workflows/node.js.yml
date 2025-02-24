@@ -24,4 +24,4 @@ jobs:
           username: github@test.palacepizzabartow.com
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: out/
-          server-dir: /home2/lanuto/test.palacepizzabartow.com/
+          server-dir: /
