@@ -61,13 +61,13 @@ export default function MenuPage() {
   // For filters "all", "gluten free", "classic pasta", and "specialty pasta" we apply meal type filtering.
   const filteredMenu = menuItems.filter((item) => {
     const categoryMatch = activeFilter === "all" || item.category === activeFilter;
-    // For classic pasta, show all items regardless of mealType.
+    // When activeFilter is "all", don't filter by mealType.
     const mealTypeMatch =
-      item.category.toLowerCase() === "classic pasta"
-        ? true
-        : (["all", "gluten free", "specialty pasta"].includes(activeFilter)
-          ? (item.mealType === activeMealType || item.mealType === "both")
-          : true);
+      activeFilter === "all" ||
+      item.category.toLowerCase() === "classic pasta" ||
+      (["gluten free", "specialty pasta"].includes(activeFilter)
+        ? (item.mealType === activeMealType || item.mealType === "both")
+        : true);
     const pizzaTypeMatch = !activePizzaType || item.pizzaType === activePizzaType;
     return categoryMatch && mealTypeMatch && pizzaTypeMatch;
   });
@@ -103,11 +103,13 @@ export default function MenuPage() {
 
   // Build ordered groups.
   const orderedGroups =
-    activeFilter === "all"
-      ? menuCategories.filter((cat) => groupedMenu[cat])
-      : activeFilter === "pizza"
-        ? ["classic", "red gourmet", "white gourmet"].filter((key) => groupedMenu[key])
-        : menuCategories.filter((cat) => groupedMenu[cat]);
+  activeFilter === "all"
+    ? menuCategories.filter((cat) => groupedMenu[cat])
+    : activeFilter === "pizza"
+    ? activePizzaType
+      ? [activePizzaType]
+      : ["classic", "red gourmet", "white gourmet", "coupons"].filter((key) => groupedMenu[key])
+    : menuCategories.filter((cat) => groupedMenu[cat]);
 
   return (
     <>
@@ -157,7 +159,7 @@ export default function MenuPage() {
 
         {/* Render Meal Type Toggle only if activeFilter is not "classic pasta" */}
         {activeFilter !== "classic pasta" &&
-          ["all", "gluten free", "specialty pasta"].includes(activeFilter) && (
+          ["gluten free", "specialty pasta"].includes(activeFilter) && (
             <div className="flex justify-center mb-4 space-x-4">
               {["lunch", "dinner"].map((type) => (
                 <button
@@ -177,19 +179,21 @@ export default function MenuPage() {
         {/* Additional Pizza Type Buttons: Render only when activeFilter is "pizza" */}
         {activeFilter === "pizza" && (
           <div className="flex justify-center space-x-4">
-            {["classic", "red gourmet", "white gourmet"].map((type) => (
+            {[
+              { value: "classic", label: "Classic" },
+              { value: "red gourmet", label: "Red Gourmet" },
+              { value: "white gourmet", label: "White Gourmet" },
+              { value: "coupons", label: "Coupons (Only online purchase)" }
+            ].map((type) => (
               <button
-                key={type}
-                onClick={() => setActivePizzaType(type)}
-                className={`px-4 py-2 rounded transition-all shadow-md shadow-gray-400 font-bold ${activePizzaType === type
-                  ? "bg-gold text-black shadow-lg shadow-gray-600 scale-105"
-                  : "bg-newblack text-white hover:bg-slate-950 hover:shadow-lg hover:shadow-gray-500"
+                key={type.value}
+                onClick={() => setActivePizzaType(type.value)}
+                className={`px-4 py-2 rounded transition-all shadow-md shadow-gray-400 font-bold ${activePizzaType === type.value
+                    ? "bg-gold text-black shadow-lg shadow-gray-600 scale-105"
+                    : "bg-newblack text-white hover:bg-slate-950 hover:shadow-lg hover:shadow-gray-500"
                   }`}
               >
-                {type
-                  .split(" ")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
+                {type.label}
               </button>
             ))}
           </div>
@@ -343,7 +347,7 @@ export default function MenuPage() {
         )}
 
         {/* Pizza Toppings Section */}
-        {activePizzaType === "classic" && (
+        {activePizzaType === "classic" || activePizzaType === "coupons" && (
           <div className="mt-8">
             <h3 className="text-center text-xl font-bold">Available Toppings</h3>
             <p className="text-center text-sm text-gray-500 mb-4">

@@ -860,6 +860,40 @@ export const menuCategories = [
       pizzaType: "red gourmet",
       style: "neapolitan",
     },
+
+    // Coupons
+    {
+      name: "XL Cheese and 10 Wings",
+      category: "pizza",
+      description: "(1) XL cheese pizza and 10 Wings.",
+      price: "$26.95",
+      mealType: "both",
+      pizzaType: "coupons",
+    },
+    {
+      name: "XL Pizza 6 Garlic Knots",
+      category: "pizza",
+      description: "(1) 18'' Cheese Pizza with an order of our famous Garlic Knots.",
+      price: "$18.95",
+      mealType: "both",
+      pizzaType: "coupons",
+    },
+    {
+      name: "XL Pizza and Garden Salad",
+      category: "pizza",
+      description: `(1) 18" Cheese Pizza and a fresh Garden Salad with your choice of dressing. (add toppings for an additional charge)`,
+      price: "$21.95",
+      mealType: "both",
+      pizzaType: "coupons",
+    },
+    {
+      name: "XL Cheese and XL 2 Topping",
+      category: "pizza",
+      description: `(1) 18" Cheese Pizza and (1) 18" Pizza with your choice of two toppings. (add more toppings for an additional charge)`,
+      price: "$32.95",
+      mealType: "both",
+      pizzaType: "coupons",
+    },
   
     // Calzones
     {
